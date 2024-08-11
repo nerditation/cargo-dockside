@@ -4,6 +4,8 @@
 
 The **Rust Toolbar** extension for Visual Studio Code provides a convenient toolbar for running common Rust commands directly from the editor. This extension streamlines your Rust development workflow by giving you easy access to essential Cargo commands through a custom toolbar.
 
+![Extension Screenshot](https://github.com/calalalizade/vscode-cargo-toolset/blob/main/media/cargo-toolset.png)
+
 ## Features
 
 - **Run Commands**: Quickly run your Rust code or build projects.
