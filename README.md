@@ -1,71 +1,100 @@
-# cargo-toolset README
+# Rust Toolbar for VS Code
 
-This is the README for your extension "cargo-toolset". After writing up a brief description, we recommend including the following sections.
+## Overview
+
+The **Rust Toolbar** extension for Visual Studio Code provides a convenient toolbar for running common Rust commands directly from the editor. This extension streamlines your Rust development workflow by giving you easy access to essential Cargo commands through a custom toolbar.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Run Commands**: Quickly run your Rust code or build projects.
+- **Build Commands**: Compile your Rust projects with various build options.
+- **Check Commands**: Check for errors and run Clippy for linting.
+- **Test Commands**: Run and manage your Rust tests.
+- **Documentation Commands**: Generate and open documentation.
+- **Package Commands**: Initialize new projects or update dependencies.
+- **Rustup Commands**: Switch between Rust toolchains.
+- **General Commands**: Access help and version information.
 
-For example if there is an image subfolder under your extension project workspace:
+## Getting Started
 
-\!\[feature X\]\(images/feature-x.png\)
+1. **Install the Extension**
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+   - Open VS Code.
+   - Go to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`.
+   - Search for **Rust Toolbar**.
+   - Click **Install**.
 
-## Requirements
+2. **Open the Toolbar**
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+   - After installation, open the Rust Toolbar by clicking on the **Rust Toolbar** icon in the Activity Bar on the side of the window.
 
-## Extension Settings
+3. **Use the Toolbar**
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+   - The toolbar will display a list of commands categorized by their function (e.g., Run Commands, Build Commands).
+   - Click on a button to execute the corresponding Cargo command.
 
-For example:
+## Commands
 
-This extension contributes the following settings:
+### Run Commands
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- **Run Code**: Compiles and runs the current project.
+- **Run Code (Quite)**: Compiles and runs the project with minimal output.
 
-## Known Issues
+### Build Commands
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- **Build**: Compiles the current project.
+- **Build Release**: Compiles the project with optimizations for release.
+- **Build Verbose**: Compiles with detailed output.
+- **Clean**: Removes build artifacts.
+- **Run Benchmarks**: Runs benchmarks for the current project.
 
-## Release Notes
+### Check Commands
 
-Users appreciate release notes as you update your extension.
+- **Check**: Checks the project for errors without producing a binary.
+- **Check All**: Checks all packages in the workspace for errors.
+- **Run Clippy**: Checks code for common mistakes and stylistic issues.
 
-### 1.0.0
+### Test Commands
 
-Initial release of ...
+- **Test Code**: Runs the tests in the current project.
+- **Test All Code**: Runs tests for all packages in the workspace.
+- **Test All (Including Ignored)**: Runs all tests, including ignored ones.
+- **Test Documentation**: Runs tests written in documentation comments.
+- **Test Without Running**: Compiles tests but doesn't execute them.
 
-### 1.0.1
+### Documentation Commands
 
-Fixed issue #.
+- **Generate Documentation**: Generates documentation for the current project.
+- **Open Documentation**: Generates documentation and opens it in the default web browser.
+- **Generate Documentation Without Dependencies**: Generates documentation without including dependencies.
 
-### 1.1.0
+### Package Commands
 
-Added features X, Y, and Z.
+- **Initialize New Project**: Creates a new Cargo project in the specified directory.
+- **Create New Project**: Creates a new Cargo project in a new directory.
+- **Update Cargo**: Updates dependencies to the latest versions.
+- **Fetch Dependencies**: Downloads the dependencies for the project.
 
----
+### Rustup Commands
 
-## Following extension guidelines
+- **Use Nightly**: Sets the project to use the nightly Rust toolchain.
+- **Use Stable**: Sets the project to use the stable Rust toolchain.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+### General Commands
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+- **Cargo Help**: Displays help information about Cargo.
+- **Cargo Version**: Shows version information about Cargo.
+- **Show Metadata**: Displays metadata about the current project and its dependencies.
 
-## Working with Markdown
+## Troubleshooting
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+- **No Commands Displayed**: Ensure that you have a Rust project open and that the toolbar is properly initialized.
+- **Command Not Working**: Check the command’s syntax and ensure that you have the necessary dependencies installed.
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+## Contributing
 
-## For more information
+If you encounter any issues or have suggestions for improvements, please feel free to contribute to the extension's GitHub repository.
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+## License
 
-**Enjoy!**
+This extension is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
