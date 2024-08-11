@@ -6,6 +6,8 @@ interface Command {
   id: string;
   title: string;
   cargoCommand: string;
+  description: string;
+  placeholders?: { [key: string]: string }; // New field for placeholders
 }
 
 interface CommandCategory {
@@ -36,10 +38,43 @@ export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically
   Object.values(categories)
     .flat()
-    .forEach(({ id, cargoCommand }: Command) => {
+    .forEach(({ id, cargoCommand, description, placeholders }: Command) => {
       context.subscriptions.push(
-        vscode.commands.registerCommand(id, () => {
-          runRustCommand(cargoCommand);
+        vscode.commands.registerCommand(id, async () => {
+          // Check if command requires arguments
+          const placeholdersArray = Object.keys(placeholders || {});
+          if (placeholdersArray.length > 0) {
+            const inputPrompts = placeholdersArray.map((placeholder) => ({
+              prompt: `Enter value for ${placeholder.replace(/[<>]/g, "")} (${
+                placeholders?.[placeholder]
+              }):`,
+              placeHolder: placeholder.replace(/[<>]/g, ""),
+            }));
+
+            const inputValues = await Promise.all(
+              inputPrompts.map(async (prompt) => {
+                return await vscode.window.showInputBox(prompt);
+              })
+            );
+
+            // Ensure all inputs are valid
+            if (inputValues.some((value) => value === undefined)) {
+              vscode.window.showErrorMessage("Command input was canceled.");
+              return;
+            }
+
+            let commandWithArgs = cargoCommand;
+            placeholdersArray.forEach((placeholder, index) => {
+              commandWithArgs = commandWithArgs.replace(
+                placeholder,
+                inputValues[index] || ""
+              );
+            });
+
+            runRustCommand(commandWithArgs);
+          } else {
+            runRustCommand(cargoCommand);
+          }
         })
       );
     });
