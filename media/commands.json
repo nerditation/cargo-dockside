@@ -1,0 +1,232 @@
+{
+  "Run Commands": [
+    {
+      "id": "rust-toolbar.runCode",
+      "title": "Run Code",
+      "cargoCommand": "run",
+      "description": "Compiles and runs the current project."
+    },
+    {
+      "id": "rust-toolbar.runCodeQuite",
+      "title": "Run Code (Quite)",
+      "cargoCommand": "run -q",
+      "description": "Compiles and runs the current project with minimal output."
+    }
+  ],
+  "Build Commands": [
+    {
+      "id": "rust-toolbar.build",
+      "title": "Build",
+      "cargoCommand": "build",
+      "description": "Compiles the current project."
+    },
+    {
+      "id": "rust-toolbar.buildRelease",
+      "title": "Build Release",
+      "cargoCommand": "build --release",
+      "description": "Compiles the current project with optimizations for release."
+    },
+    {
+      "id": "rust-toolbar.buildVerbose",
+      "title": "Build Verbose",
+      "cargoCommand": "build --verbose",
+      "description": "Compiles the current project with detailed output."
+    },
+    {
+      "id": "rust-toolbar.clean",
+      "title": "Clean",
+      "cargoCommand": "clean",
+      "description": "Removes the target directory, cleaning up build artifacts."
+    },
+    {
+      "id": "rust-toolbar.bench",
+      "title": "Run Benchmarks",
+      "cargoCommand": "bench",
+      "description": "Runs benchmarks for the current project."
+    }
+  ],
+  "Check Commands": [
+    {
+      "id": "rust-toolbar.check",
+      "title": "Check",
+      "cargoCommand": "check",
+      "description": "Checks the current project for errors without producing a binary."
+    },
+    {
+      "id": "rust-toolbar.checkAll",
+      "title": "Check All",
+      "cargoCommand": "check --all",
+      "description": "Checks all packages in the workspace for errors."
+    },
+    {
+      "id": "rust-toolbar.clippy",
+      "title": "Run Clippy",
+      "cargoCommand": "clippy",
+      "description": "Checks code for common mistakes and stylistic issues."
+    }
+  ],
+  "Test Commands": [
+    {
+      "id": "rust-toolbar.testCode",
+      "title": "Test Code",
+      "cargoCommand": "test",
+      "description": "Runs the tests in the current project."
+    },
+    {
+      "id": "rust-toolbar.testCodeAll",
+      "title": "Test All Code",
+      "cargoCommand": "test --all",
+      "description": "Runs tests for all packages in the workspace."
+    },
+    {
+      "id": "rust-toolbar.testAllIncludingIgnored",
+      "title": "Test All (Including Ignored)",
+      "cargoCommand": "test -- --include-ignored",
+      "description": "Runs all tests, including ignored ones."
+    },
+    {
+      "id": "rust-toolbar.testDoc",
+      "title": "Test Documentation",
+      "cargoCommand": "test --doc",
+      "description": "Runs tests written in documentation comments."
+    },
+    {
+      "id": "rust-toolbar.testNoRun",
+      "title": "Test Without Running",
+      "cargoCommand": "test --no-run",
+      "description": "Compiles tests but doesn't execute them."
+    }
+  ],
+  "Doc Commands": [
+    {
+      "id": "rust-toolbar.doc",
+      "title": "Generate Documentation",
+      "cargoCommand": "doc",
+      "description": "Generates documentation for the current project."
+    },
+    {
+      "id": "rust-toolbar.docOpen",
+      "title": "Open Documentation",
+      "cargoCommand": "doc --open",
+      "description": "Generates documentation and opens it in the default web browser."
+    },
+    {
+      "id": "rust-toolbar.docNoDeps",
+      "title": "Generate Documentation Without Dependencies",
+      "cargoCommand": "doc --no-deps",
+      "description": "Generates documentation without including documentation for dependencies."
+    }
+  ],
+  "Package Commands": [
+    {
+      "id": "rust-toolbar.init",
+      "title": "Initialize New Project",
+      "cargoCommand": "init",
+      "description": "Creates a new Cargo project in the specified directory."
+    },
+    {
+      "id": "rust-toolbar.new",
+      "title": "Create New Project",
+      "cargoCommand": "new",
+      "description": "Creates a new Cargo project in a new directory."
+    },
+    {
+      "id": "rust-toolbar.update",
+      "title": "Update Cargo",
+      "cargoCommand": "update",
+      "description": "Updates dependencies to the latest versions specified in the Cargo.toml."
+    },
+    {
+      "id": "rust-toolbar.fetch",
+      "title": "Fetch Dependencies",
+      "cargoCommand": "fetch",
+      "description": "Downloads the dependencies for the project."
+    }
+  ],
+  "Rustup Commands": [
+    {
+      "id": "rust-toolbar.useNightly",
+      "title": "Use Nightly",
+      "cargoCommand": "rustup override set nightly",
+      "description": "Sets the project to use the nightly Rust toolchain."
+    },
+    {
+      "id": "rust-toolbar.useStable",
+      "title": "Use Stable",
+      "cargoCommand": "rustup override set stable",
+      "description": "Sets the project to use the stable Rust toolchain."
+    }
+  ],
+  "General Commands": [
+    {
+      "id": "rust-toolbar.help",
+      "title": "Cargo Help",
+      "cargoCommand": "help",
+      "description": "Displays help information about Cargo."
+    },
+    {
+      "id": "rust-toolbar.version",
+      "title": "Cargo Version",
+      "cargoCommand": "version",
+      "description": "Shows version information about Cargo."
+    },
+    {
+      "id": "rust-toolbar.metadata",
+      "title": "Show Metadata",
+      "cargoCommand": "metadata",
+      "description": "Displays metadata about the current project and its dependencies."
+    }
+  ],
+  "Analyze Commands": [
+    {
+      "id": "rust-toolbar.fmt",
+      "title": "Format Code",
+      "cargoCommand": "fmt",
+      "description": "Formats the code according to Rust style guidelines."
+    },
+    {
+      "id": "rust-toolbar.fix",
+      "title": "Apply Quick Fixes",
+      "cargoCommand": "fix",
+      "description": "Applies quick fixes suggested by Clippy."
+    }
+  ],
+  "Publishing Commands": [
+    {
+      "id": "rust-toolbar.login",
+      "title": "Cargo Login",
+      "cargoCommand": "login",
+      "description": "Save an API token from the registry locally."
+    },
+    {
+      "id": "rust-toolbar.logout",
+      "title": "Cargo Logout",
+      "cargoCommand": "logout",
+      "description": "Remove an API token from the registry locally."
+    },
+    {
+      "id": "rust-toolbar.owner",
+      "title": "Cargo Owner",
+      "cargoCommand": "owner",
+      "description": "Manage the owners of a crate on the registry."
+    },
+    {
+      "id": "rust-toolbar.package",
+      "title": "Cargo Package",
+      "cargoCommand": "package",
+      "description": "Assemble the local package into a distributable tarball."
+    },
+    {
+      "id": "rust-toolbar.publish",
+      "title": "Cargo Publish",
+      "cargoCommand": "publish",
+      "description": "Upload a package to the registry."
+    },
+    {
+      "id": "rust-toolbar.yank",
+      "title": "Cargo Yank",
+      "cargoCommand": "yank",
+      "description": "Remove a pushed crate from the index."
+    }
+  ]
+}
