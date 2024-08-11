@@ -1,6 +1,7 @@
 {
   "name": "cargo-toolset",
-  "displayName": "cargo-toolset",
+  "displayName": "Cargo Toolset",
+  "publisher": "jalalalizz",
   "description": "An extension for managing and executing common Rust(cargo) commands",
   "version": "0.0.1",
   "engines": {
