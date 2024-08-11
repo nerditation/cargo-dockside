@@ -1,8 +1,8 @@
-# Rust Toolbar for VS Code
+# Cargo Toolset for VS Code
 
 ## Overview
 
-The **Rust Toolbar** extension for Visual Studio Code provides a convenient toolbar for running common Rust commands directly from the editor. This extension streamlines your Rust development workflow by giving you easy access to essential Cargo commands through a custom toolbar.
+The **Cargo Toolset** extension for Visual Studio Code provides a convenient toolbar for running common Cargo commands directly from the editor. This extension streamlines your Rust development workflow by giving you easy access to essential Cargo commands through a custom toolbar.
 
 ![Extension Screenshot](https://github.com/calalalizade/vscode-cargo-toolset/blob/main/media/cargo-toolset.png)
 
@@ -23,12 +23,12 @@ The **Rust Toolbar** extension for Visual Studio Code provides a convenient tool
 
    - Open VS Code.
    - Go to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`.
-   - Search for **Rust Toolbar**.
+   - Search for **Cargo Toolset**.
    - Click **Install**.
 
 2. **Open the Toolbar**
 
-   - After installation, open the Rust Toolbar by clicking on the **Rust Toolbar** icon in the Activity Bar on the side of the window.
+   - After installation, open the Cargo Toolset by clicking on the **Cargo Toolset** icon in the Activity Bar on the side of the window.
 
 3. **Use the Toolbar**
 
