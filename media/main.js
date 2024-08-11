@@ -1,14 +1,13 @@
 (function () {
   const vscode = acquireVsCodeApi();
-
-  // Use the categories variable passed from the extension
   const commandCategoriesDiv = document.getElementById("commandCategories");
 
   for (const [category, commands] of Object.entries(categories)) {
     const section = document.createElement("div");
-    section.className = "command-section";
+    section.className = "category-section";
+    section.id = `${category.replace(/\s+/g, "")}Section`; // Create a unique ID for each section
 
-    const header = document.createElement("h2");
+    const header = document.createElement("h3");
     header.textContent = category;
     section.appendChild(header);
 
@@ -18,6 +17,9 @@
       button.textContent = command.title;
       button.setAttribute("data-command", command.id);
       button.setAttribute("title", `Execute: ${command.description}`); // Tooltip
+
+      // Set button color based on category
+      button.classList.add(`${category.replace(/\s+/g, "")}-button`);
 
       button.addEventListener("click", () => {
         console.log(`Button clicked: ${command.id}`); // Debug log

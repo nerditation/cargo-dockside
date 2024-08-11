@@ -14,18 +14,27 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "rustToolbar",
+          "title": "Cargo Toolset",
+          "icon": "media/rust.png"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "rustToolbar": [
         {
           "type": "webview",
           "id": "rust-toolbar.toolbarView",
-          "name": "Rust Toolbar"
+          "name": "Cargo Toolset"
         }
       ]
     },
     "commands": [],
     "configuration": {
-      "title": "Rust Toolbar",
+      "title": "Cargo Toolset",
       "properties": {
         "rust-toolbar.cargoCmdPrefix": {
           "type": "string",

@@ -1,34 +1,199 @@
+/* Import Poppins Font from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
 body {
-  font-family: Arial, sans-serif;
-  padding: 10px;
   margin: 0;
+  padding: 10px;
+  font-family: "Poppins", sans-serif;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
 }
 
-.command-section {
+.toolbar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 5px;
+}
+
+.category-section {
   margin-bottom: 15px;
 }
 
-.command-section h2 {
-  font-size: 16px;
+.category-section h3 {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #ffffff;
+  border-bottom: 1px solid #444;
+  padding-bottom: 4px;
+}
+
+/* General Button Styling */
+.toolbar-button {
+  padding: 10px 0;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+  display: block;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  position: relative;
+  box-sizing: border-box;
+  color: white;
+}
+
+/* Run Commands Section Buttons */
+.RunCommands-button {
+  background-color: #4e8a8a; /* Matte Teal */
+}
+
+.RunCommands-button:hover {
+  background-color: #387070; /* Darker Teal */
+}
+
+/* Build Commands Section Buttons */
+.BuildCommands-button {
+  background-color: #8c8c6c; /* Matte Olive Green */
+}
+
+.BuildCommands-button:hover {
+  background-color: #707050; /* Darker Olive Green */
+}
+
+/* Check Commands Section Buttons */
+.CheckCommands-button {
+  background-color: #8c5e5e; /* Matte Rose Brown */
+}
+
+.CheckCommands-button:hover {
+  background-color: #704c4c; /* Darker Rose Brown */
+}
+
+/* Test Commands Section Buttons */
+.TestCommands-button {
+  background-color: #6c8cbf; /* Matte Steel Blue */
+}
+
+.TestCommands-button:hover {
+  background-color: #4a6b8e; /* Darker Steel Blue */
+}
+
+/* Doc Commands Section Buttons */
+.DocCommands-button {
+  background-color: #9c7f4c; /* Matte Bronze */
+}
+
+.DocCommands-button:hover {
+  background-color: #7a5e3b; /* Darker Bronze */
+}
+
+/* Package Commands Section Buttons */
+.PackageCommands-button {
+  background-color: #7d5a9b; /* Matte Purple */
+}
+
+.PackageCommands-button:hover {
+  background-color: #5e4382; /* Darker Purple */
+}
+
+/* Rustup Commands Section Buttons */
+.RustupCommands-button {
+  background-color: #7f9b7f; /* Matte Sage Green */
+}
+
+.RustupCommands-button:hover {
+  background-color: #5e7f5e; /* Darker Sage Green */
+}
+
+/* General Commands Section Buttons */
+.GeneralCommands-button {
+  background-color: #9b9b6c; /* Matte Khaki */
+}
+
+.GeneralCommands-button:hover {
+  background-color: #7f7f4f; /* Darker Khaki */
+}
+
+/* Analyze Commands Section Buttons */
+.AnalyzeCommands-button {
+  background-color: #8f9b77; /* Matte Olive Drab */
+}
+
+.AnalyzeCommands-button:hover {
+  background-color: #6d7a57; /* Darker Olive Drab */
+}
+
+/* Publishing Commands Section Buttons */
+.PublishingCommands-button {
+  background-color: #b89b6c; /* Matte Sand */
+}
+
+.PublishingCommands-button:hover {
+  background-color: #a07e5c; /* Darker Sand */
+}
+
+/* Focus and Tooltip Styles */
+.toolbar-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffd54f; /* Focus color */
+}
+
+.toolbar-button .tooltip {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.toolbar-button:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.toolbar-button .tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -4px;
+  border-width: 4px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.category-section h3 {
   font-weight: bold;
-  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.toolbar-container {
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #252526;
 }
 
 .toolbar-button {
-  display: block;
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  background-color: #007acc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  text-align: center;
-  transition: background-color 0.3s ease;
+  margin: 0 0 10px 0;
 }
 
-.toolbar-button:hover {
-  background-color: #005999;
+.category-section {
+  padding: 0 5px;
 }
