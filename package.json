@@ -1,12 +1,13 @@
 {
   "name": "cargo-toolset",
   "displayName": "cargo-toolset",
-  "description": "An extension for running Rust code",
+  "description": "An extension for managing and executing common Rust(cargo) commands",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.92.0"
   },
   "categories": [
+    "Programming Languages",
     "Other"
   ],
   "activationEvents": [
