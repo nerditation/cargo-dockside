@@ -3,6 +3,7 @@
   "displayName": "Cargo Toolset",
   "publisher": "jalalalizz",
   "description": "An extension for managing and executing common Rust(cargo) commands",
+  "icon": "media/logo.png",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.92.0"
