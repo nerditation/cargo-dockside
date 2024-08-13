@@ -4,7 +4,7 @@
 
 The **Cargo Toolset** extension for Visual Studio Code provides a convenient toolbar for running common Cargo commands directly from the editor. This extension streamlines your Rust development workflow by giving you easy access to essential Cargo commands through a custom toolbar.
 
-![Extension Screenshot](https://raw.githubusercontent.com/calalalizade/vscode-cargo-toolset/main/media/cargo-toolset.png)
+<img src="https://raw.githubusercontent.com/calalalizade/vscode-cargo-toolset/main/media/cargo-toolset.png" alt="cargo toolset screenshot">
 
 ## Features
 
