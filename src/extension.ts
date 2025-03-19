@@ -71,30 +71,42 @@ export function activate(context: vscode.ExtensionContext) {
               );
             });
 
-            runRustCommand(commandWithArgs);
+            await runRustCommand(commandWithArgs);
           } else {
-            runRustCommand(cargoCommand);
+            await runRustCommand(cargoCommand);
           }
         })
       );
     });
 }
 
-function runRustCommand(command: string) {
-  const terminal =
-    vscode.window.activeTerminal || vscode.window.createTerminal("Rust");
-  terminal.show();
-
-  const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+async function runRustCommand(command: string) {
+  const workspaceFolder = vscode.workspace.workspaceFolders?.at(0);
+  let cwd;
   if (!workspaceFolder) {
-    vscode.window.showErrorMessage("No workspace folder found");
-    return;
+    if ("Continue" != await vscode.window.showWarningMessage("No workspace folder found, continue?", "Continue")) {
+      return;
+    }
+    cwd = process.cwd();
   }
-
   const cargoCmdPrefix = vscode.workspace
     .getConfiguration("rust-toolbar")
     .get("cargoCmdPrefix", "cargo");
-  terminal.sendText(`${cargoCmdPrefix} ${command}`);
+  const exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${command}`, { cwd })
+  const task = new vscode.Task(
+    {
+      type: "cargo-dockside",
+      nonce: `cargo-dockside-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
+    },
+    vscode.TaskScope.Workspace,
+    "Cargo",
+    "Cargo Dockside",
+    exe,
+  );
+  task.presentationOptions.focus = false;
+  task.presentationOptions.clear = false;
+  task.presentationOptions.echo = true;
+  await vscode.tasks.executeTask(task);
 }
 
 class RustToolbarProvider implements vscode.WebviewViewProvider {
