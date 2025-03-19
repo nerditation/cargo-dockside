@@ -1,10 +1,10 @@
 {
-  "name": "cargo-toolset",
-  "displayName": "Cargo Toolset",
-  "publisher": "jalalalizz",
-  "description": "An extension for managing and executing common Rust(cargo) commands",
+  "name": "cargo-dockside",
+  "displayName": "Cargo Dockside",
+  "publisher": "nerditation",
+  "description": "shortcuts for various cargo subcommands in vscode sidebar.",
   "icon": "media/logo.png",
-  "version": "0.0.1",
+  "version": "0.0.2+dev",
   "engines": {
     "vscode": "^1.92.0"
   },
@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/calalalizade/vscode-cargo-toolset"
+    "url": "https://github.com/nerditation/cargo-dockside"
   },
   "activationEvents": [
     "onCommand"
@@ -25,7 +25,7 @@
       "activitybar": [
         {
           "id": "rustToolbar",
-          "title": "Cargo Toolset",
+          "title": "Cargo Dockside",
           "icon": "media/rust.png"
         }
       ]
@@ -192,12 +192,13 @@
       }
     }
   },
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "generate-commands": "node generate-commands.js",
-    "vscode:prepublish": "npm run generate-commands && npm run compile",
+    "vscode:prepublish": "pnpm run generate-commands && pnpm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test"
   },
