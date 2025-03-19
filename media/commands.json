@@ -131,7 +131,8 @@
       "description": "Creates a new Cargo project in a new directory.",
       "placeholders": {
         "<PATH>": "The directory where the new project will be created (e.g., my_project)."
-      }
+      },
+      "noWorkspaceNeeded": true
     },
     {
       "id": "rust-toolbar.update",
@@ -165,13 +166,15 @@
       "id": "rust-toolbar.help",
       "title": "Cargo Help",
       "cargoCommand": "help",
-      "description": "Displays help information about Cargo."
+      "description": "Displays help information about Cargo.",
+      "noWorkspaceNeeded": true
     },
     {
       "id": "rust-toolbar.version",
       "title": "Cargo Version",
       "cargoCommand": "version",
-      "description": "Shows version information about Cargo."
+      "description": "Shows version information about Cargo.",
+      "noWorkspaceNeeded": true
     },
     {
       "id": "rust-toolbar.metadata",
@@ -199,13 +202,15 @@
       "id": "rust-toolbar.login",
       "title": "Cargo Login",
       "cargoCommand": "login",
-      "description": "Save an API token from the registry locally."
+      "description": "Save an API token from the registry locally.",
+      "noWorkspaceNeeded": true
     },
     {
       "id": "rust-toolbar.logout",
       "title": "Cargo Logout",
       "cargoCommand": "logout",
-      "description": "Remove an API token from the registry locally."
+      "description": "Remove an API token from the registry locally.",
+      "noWorkspaceNeeded": true
     },
     {
       "id": "rust-toolbar.owner",

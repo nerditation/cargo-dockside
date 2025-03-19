@@ -8,6 +8,13 @@ interface Command {
   cargoCommand: string;
   description: string;
   placeholders?: { [key: string]: string }; // New field for placeholders
+  /**
+   * this command does not need a workspace to be opened, i.e. it does not
+   * depend on the current working directory. examples include:
+   * - cargo login
+   * - cargo new (with absolute path)
+   */
+  noWorkspaceNeeded?: boolean,
 }
 
 interface CommandCategory {
@@ -38,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically
   Object.values(categories)
     .flat()
-    .forEach(({ id, cargoCommand, description, placeholders }: Command) => {
+    .forEach(({ id, cargoCommand, description, placeholders, noWorkspaceNeeded }: Command) => {
       context.subscriptions.push(
         vscode.commands.registerCommand(id, async () => {
           // Check if command requires arguments
@@ -71,20 +78,28 @@ export function activate(context: vscode.ExtensionContext) {
               );
             });
 
-            await runRustCommand(commandWithArgs);
+            await runRustCommand(commandWithArgs, noWorkspaceNeeded);
           } else {
-            await runRustCommand(cargoCommand);
+            await runRustCommand(cargoCommand, noWorkspaceNeeded);
           }
         })
       );
     });
 }
 
-async function runRustCommand(command: string) {
+async function runRustCommand(command: string, noWorkspaceNeeded?: boolean) {
   const workspaceFolder = vscode.workspace.workspaceFolders?.at(0);
+  // NOTE to reader
+  // the doc of `vscode.Task` says the `scope` argument of `vscode.TaskScope.Global`
+  // is not supported, but from my experiments, this argument has not effect,
+  // the task will run the same no matter what `scope` is. what does matter is,
+  // however, if no workspace is open, you must specify the `cwd` option of
+  // the execution (either ProcessExecution or ShellExecution), otherwise, vscode
+  // will try to resolve the `${workspaceFoler}` variable and error out.
   let cwd;
   if (!workspaceFolder) {
-    if ("Continue" != await vscode.window.showWarningMessage("No workspace folder found, continue?", "Continue")) {
+    // CAUTION: intentional double negative, read slowly and carefully
+    if (!noWorkspaceNeeded && "Continue" != await vscode.window.showWarningMessage("No workspace folder found, continue?", "Continue")) {
       return;
     }
     cwd = process.cwd();
