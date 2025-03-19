@@ -92,7 +92,15 @@ async function runRustCommand(command: string) {
   const cargoCmdPrefix = vscode.workspace
     .getConfiguration("rust-toolbar")
     .get("cargoCmdPrefix", "cargo");
-  const exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${command}`, { cwd })
+  let exe;
+  if (vscode.workspace.getConfiguration("rust-toolbar").get("useShell", true)) {
+    exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${command}`, { cwd })
+  } else {
+    // TODO: proper command line parsing, including quotations, escapes, etc
+    const argv = `${cargoCmdPrefix} ${command}`.split(' ');
+    const argv0 = argv.shift()!;
+    exe = new vscode.ProcessExecution(argv0, argv, { cwd })
+  }
   const task = new vscode.Task(
     {
       type: "cargo-dockside",
