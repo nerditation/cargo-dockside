@@ -127,7 +127,10 @@
     {
       "id": "rust-toolbar.new",
       "title": "Create New Project",
-      "cargoCommand": "new <PATH>",
+      "cargoCommand": [
+        "new",
+        "<PATH>"
+      ],
       "description": "Creates a new Cargo project in a new directory.",
       "placeholders": {
         "<PATH>": "The directory where the new project will be created (e.g., my_project)."
