@@ -5,7 +5,12 @@ import * as fs from "fs";
 interface Command {
   id: string;
   title: string;
-  cargoCommand: string;
+  /**
+   * to be able to bypass the shell and run `cargo` directly, the command line
+   * needs to be split into individual arguments. if this field is a `string`,
+   * it will be splitted by space.
+   */
+  cargoCommand: string | string[];
   description: string;
   placeholders?: { [key: string]: string }; // New field for placeholders
   /**
@@ -46,6 +51,9 @@ export function activate(context: vscode.ExtensionContext) {
   Object.values(categories)
     .flat()
     .forEach(({ id, cargoCommand, description, placeholders, noWorkspaceNeeded }: Command) => {
+      if (typeof cargoCommand == 'string') {
+        cargoCommand = cargoCommand.split(' ');
+      }
       context.subscriptions.push(
         vscode.commands.registerCommand(id, async () => {
           // Check if command requires arguments
@@ -72,10 +80,10 @@ export function activate(context: vscode.ExtensionContext) {
 
             let commandWithArgs = cargoCommand;
             placeholdersArray.forEach((placeholder, index) => {
-              commandWithArgs = commandWithArgs.replace(
+              commandWithArgs = commandWithArgs.map(s => s.replace(
                 placeholder,
                 inputValues[index] || ""
-              );
+              ));
             });
 
             await runRustCommand(commandWithArgs, noWorkspaceNeeded);
@@ -87,7 +95,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 }
 
-async function runRustCommand(command: string, noWorkspaceNeeded?: boolean) {
+async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
   const workspaceFolder = vscode.workspace.workspaceFolders?.at(0);
   // NOTE to reader
   // the doc of `vscode.Task` says the `scope` argument of `vscode.TaskScope.Global`
@@ -109,10 +117,10 @@ async function runRustCommand(command: string, noWorkspaceNeeded?: boolean) {
     .get("cargoCmdPrefix", "cargo");
   let exe;
   if (vscode.workspace.getConfiguration("rust-toolbar").get("useShell", true)) {
-    exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${command}`, { cwd })
+    exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${args.map(s => `"${s}"`).join(' ')}`, { cwd })
   } else {
     // TODO: proper command line parsing, including quotations, escapes, etc
-    const argv = `${cargoCmdPrefix} ${command}`.split(' ');
+    const argv = [...`${cargoCmdPrefix}`.split(' '), ...args];
     const argv0 = argv.shift()!;
     exe = new vscode.ProcessExecution(argv0, argv, { cwd })
   }
