@@ -14,37 +14,34 @@ body {
 }
 
 .category-section {
-  margin-bottom: 15px;
-  padding: 0 5px;
+  padding: 0px 5px;
 }
 
 .category-section h3 {
-  margin-bottom: 8px;
-  font-size: 14px;
   color: var(--vscode-sideBarSectionHeader-foreground);
   background-color: var(--vscode-sideBarSectionHeader-background);
-  border-bottom: 1px solid var(--vscode-sideBar-border);
-  padding-bottom: 4px;
+  padding: 10px 0;
+  margin: 4px 0;
+  text-align: center;
 }
 
 /* General Button Styling */
 .toolbar-button {
-  padding: 4px 0;
-  margin-bottom: 5px;
-  border-radius: 6px;
+  padding: 5px 0;
+  margin: 3px 1%;
+  border-radius: 0px;
   border: none;
   cursor: pointer;
   /* font-family: "Poppins", sans-serif; */
   /* font-size: 14px; */
   text-align: center;
-  width: 100%;
+  width: 98%;
   display: block;
   transition: background-color 0.3s ease, transform 0.3s ease;
   position: relative;
   box-sizing: border-box;
   color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-background);
-  margin: 0 0 10px 0;
 }
 
 .toolbar-button:hover {
@@ -56,8 +53,6 @@ body {
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-top: 0;
-  margin-bottom: 6px;
 }
 
 /* Run Commands Section Buttons */
