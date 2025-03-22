@@ -111,12 +111,13 @@ export function activate(context: vscode.ExtensionContext) {
               })
             }
           }
+          let exit_code;
           if (typeof cargoCommand == 'string') {
-            await runRustCommand(cargoCommand.split(/\s+/), noWorkspaceNeeded);
+            exit_code = await runRustCommand(cargoCommand.split(/\s+/), noWorkspaceNeeded);
           } else {
-            await runRustCommand(cargoCommand, noWorkspaceNeeded);
+            exit_code = await runRustCommand(cargoCommand, noWorkspaceNeeded);
           }
-          if (postCommand) {
+          if (exit_code == 0 && postCommand) {
             if ('Yes' == await vscode.window.showInformationMessage(
               postCommand.prompt ?? "This command has a post-command, do you want to run it?",
               'Yes'
@@ -166,10 +167,11 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
     const argv0 = argv.shift()!;
     exe = new vscode.ProcessExecution(argv0, argv, { cwd })
   }
+  const task_id = `cargo-dockside-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
   const task = new vscode.Task(
     {
       type: "cargo-dockside",
-      nonce: `cargo-dockside-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
+      task_id,
     },
     vscode.TaskScope.Workspace,
     "Cargo",
@@ -179,7 +181,15 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
   task.presentationOptions.focus = false;
   task.presentationOptions.clear = false;
   task.presentationOptions.echo = true;
-  await vscode.tasks.executeTask(task);
+  return await new Promise<number | undefined>((resolve, reject) => {
+    const disposable = vscode.tasks.onDidEndTaskProcess((e) => {
+      if (e.execution.task.definition.task_id == task_id) {
+        disposable.dispose();
+        resolve(e.exitCode);
+      }
+    });
+    vscode.tasks.executeTask(task);
+  })
 }
 
 class RustToolbarProvider implements vscode.WebviewViewProvider {
