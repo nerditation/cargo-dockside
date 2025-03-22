@@ -15,6 +15,7 @@ body {
 
 .category-section {
   margin-bottom: 15px;
+  padding: 0 5px;
 }
 
 .category-section h3 {
@@ -43,6 +44,7 @@ body {
   box-sizing: border-box;
   color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-background);
+  margin: 0 0 10px 0;
 }
 
 .toolbar-button:hover {
@@ -51,7 +53,13 @@ body {
 
 .category-section h3 {
   color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0;
+  margin-bottom: 6px;
 }
+
 /* Run Commands Section Buttons */
 #RunCommandsSection h3 {
   background-color: #4e8a8a; /* Matte Teal */
@@ -106,20 +114,4 @@ body {
 .toolbar-button:focus {
   outline: none;
   box-shadow: 0 0 0 2px #ffd54f; /* Focus color */
-}
-
-.category-section h3 {
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 0;
-  margin-bottom: 6px;
-}
-
-.toolbar-button {
-  margin: 0 0 10px 0;
-}
-
-.category-section {
-  padding: 0 5px;
 }
