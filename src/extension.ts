@@ -127,6 +127,14 @@ export function activate(context: vscode.ExtensionContext) {
         })
       );
     });
+
+  // I can't parse the path into a `Uri`, but the builtin `vscode.openFoler`
+  // requires the first argument to be `Uri`, not a string.
+  // this command is not listed in package.json, so the description will be
+  // nonsense.
+  context.subscriptions.push(vscode.commands.registerCommand('cargo-dockside.--open-folder-wrapper', (path: string, opts?: any) => {
+    return vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(path), opts);
+  }))
 }
 
 async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {

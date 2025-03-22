@@ -172,9 +172,9 @@
       "noWorkspaceNeeded": true,
       "postCommand": {
         "prompt": "Open the New Project?",
-        "id": "vscode.openFolder",
+        "id": "cargo-dockside.--open-folder-wrapper",
         "args": [
-          "file://<tmpdir>/playground-<XXX>",
+          "<tmpdir>/playground-<XXX>",
           {
             "noRecentEntry": true
           }
