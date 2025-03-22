@@ -169,7 +169,17 @@
           "kind": "nonce"
         }
       ],
-      "noWorkspaceNeeded": true
+      "noWorkspaceNeeded": true,
+      "postCommand": {
+        "prompt": "Open the New Project?",
+        "id": "vscode.openFolder",
+        "args": [
+          "file://<tmpdir>/playground-<XXX>",
+          {
+            "noRecentEntry": true
+          }
+        ]
+      }
     },
     {
       "id": "rust-toolbar.update",

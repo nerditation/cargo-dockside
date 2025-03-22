@@ -42,6 +42,10 @@ interface Command {
    * - cargo new (with absolute path)
    */
   noWorkspaceNeeded?: boolean,
+  /**
+   * specify a command to run if the current command finished successfully
+   */
+  postCommand?: string | { id: string, prompt?: string, args?: any[] },
 }
 
 interface CommandCategory {
@@ -72,9 +76,14 @@ export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically
   Object.values(categories)
     .flat()
-    .forEach(({ id, cargoCommand, description, placeholders, noWorkspaceNeeded }: Command) => {
+    .forEach(({ id, cargoCommand, description, placeholders, noWorkspaceNeeded, postCommand }: Command) => {
       if (placeholders && !Array.isArray(placeholders)) {
         placeholders = parse_placeholders(placeholders);
+      }
+      if (typeof postCommand == 'string') {
+        postCommand = {
+          id: postCommand
+        }
       }
       context.subscriptions.push(
         vscode.commands.registerCommand(id, async () => {
@@ -93,11 +102,27 @@ export function activate(context: vscode.ExtensionContext) {
             } else {
               cargoCommand = cargoCommand.map(s => s.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]));
             }
+            if (postCommand?.args) {
+              const args = postCommand.args;
+              args.forEach((arg, i) => {
+                if (typeof arg == 'string') {
+                  args[i] = arg.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]);
+                }
+              })
+            }
           }
           if (typeof cargoCommand == 'string') {
             await runRustCommand(cargoCommand.split(/\s+/), noWorkspaceNeeded);
           } else {
             await runRustCommand(cargoCommand, noWorkspaceNeeded);
+          }
+          if (postCommand) {
+            if ('Yes' == await vscode.window.showInformationMessage(
+              postCommand.prompt ?? "This command has a post-command, do you want to run it?",
+              'Yes'
+            )) {
+              vscode.commands.executeCommand(postCommand.id, ...(postCommand.args ?? []));
+            }
           }
         })
       );
