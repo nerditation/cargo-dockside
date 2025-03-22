@@ -13,13 +13,6 @@ body {
   color: var(--vscode-editor-foreground);
 }
 
-.toolbar-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 5px;
-}
-
 .category-section {
   margin-bottom: 15px;
 }
@@ -35,7 +28,7 @@ body {
 
 /* General Button Styling */
 .toolbar-button {
-  padding: 10px 0;
+  padding: 4px 0;
   margin-bottom: 5px;
   border-radius: 6px;
   border: none;
@@ -115,52 +108,12 @@ body {
   box-shadow: 0 0 0 2px #ffd54f; /* Focus color */
 }
 
-.toolbar-button .tooltip {
-  visibility: hidden;
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 4px 8px;
-  border-radius: 4px;
-  position: absolute;
-  bottom: 110%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.toolbar-button:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
-}
-
-.toolbar-button .tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -4px;
-  border-width: 4px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
-}
-
 .category-section h3 {
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 0;
   margin-bottom: 6px;
-}
-
-.toolbar-container {
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 10px;
-  background-color: #252526;
 }
 
 .toolbar-button {
