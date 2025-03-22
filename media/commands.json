@@ -133,9 +133,9 @@
       ],
       "description": "Creates a new Cargo project in a new directory.",
       "placeholders": {
-        "<PATH>": "The directory where the new project will be created (e.g., my_project)."
+        "<PATH:new-dir>": "The directory where the new project will be created (e.g., my_project)."
       },
-      "noWorkspaceNeeded": false
+      "noWorkspaceNeeded": true
     },
     {
       "id": "rust-toolbar.update",

@@ -2,6 +2,18 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 
+const validPlaceholderKind = {
+  'new-dir': 'new-dir'
+} as const;
+
+type PlaceholderKind = keyof typeof validPlaceholderKind | undefined;
+
+interface PlaceholderSpec {
+  kind: PlaceholderKind,
+  name: string,
+  description: string,
+}
+
 interface Command {
   id: string;
   title: string;
@@ -12,7 +24,7 @@ interface Command {
    */
   cargoCommand: string | string[];
   description: string;
-  placeholders?: { [key: string]: string }; // New field for placeholders
+  placeholders?: PlaceholderSpec[] | { [key: string]: string }; // New field for placeholders
   /**
    * this command does not need a workspace to be opened, i.e. it does not
    * depend on the current working directory. examples include:
@@ -51,42 +63,29 @@ export function activate(context: vscode.ExtensionContext) {
   Object.values(categories)
     .flat()
     .forEach(({ id, cargoCommand, description, placeholders, noWorkspaceNeeded }: Command) => {
-      if (typeof cargoCommand == 'string') {
-        cargoCommand = cargoCommand.split(' ');
+      if (placeholders && !Array.isArray(placeholders)) {
+        placeholders = parse_placeholders(placeholders);
       }
       context.subscriptions.push(
         vscode.commands.registerCommand(id, async () => {
-          // Check if command requires arguments
-          const placeholdersArray = Object.keys(placeholders || {});
-          if (placeholdersArray.length > 0) {
-            const inputPrompts = placeholdersArray.map((placeholder) => ({
-              prompt: `Enter value for ${placeholder.replace(/[<>]/g, "")} (${
-                placeholders?.[placeholder]
-              }):`,
-              placeHolder: placeholder.replace(/[<>]/g, ""),
-            }));
-
-            const inputValues = await Promise.all(
-              inputPrompts.map(async (prompt) => {
-                return await vscode.window.showInputBox(prompt);
-              })
-            );
-
-            // Ensure all inputs are valid
-            if (inputValues.some((value) => value === undefined)) {
-              vscode.window.showErrorMessage("Command input was canceled.");
-              return;
+          if (placeholders) {
+            const dictionary: Record<string, string> = {};
+            for (const spec of placeholders) {
+              const resolved = await resolve_placeholder(spec);
+              if (!resolved) {
+                vscode.window.showInformationMessage("canceled");
+                return;
+              }
+              dictionary[spec.name] = resolved;
+              if (typeof cargoCommand == 'string') {
+                cargoCommand = cargoCommand.replaceAll(/<(.+)>/g, (_, name) => dictionary[name]);
+              } else {
+                cargoCommand = cargoCommand.map(s => s.replaceAll(/<(.+)>/g, (_, name) => dictionary[name]));
+              }
             }
-
-            let commandWithArgs = cargoCommand;
-            placeholdersArray.forEach((placeholder, index) => {
-              commandWithArgs = commandWithArgs.map(s => s.replace(
-                placeholder,
-                inputValues[index] || ""
-              ));
-            });
-
-            await runRustCommand(commandWithArgs, noWorkspaceNeeded);
+          }
+          if (typeof cargoCommand == 'string') {
+            await runRustCommand(cargoCommand.split(' '), noWorkspaceNeeded);
           } else {
             await runRustCommand(cargoCommand, noWorkspaceNeeded);
           }
@@ -205,5 +204,56 @@ class RustToolbarProvider implements vscode.WebviewViewProvider {
                 <script src="${scriptUri}"></script>
             </body>
             </html>`;
+  }
+}
+
+function parse_kind(input: string): PlaceholderKind {
+  return validPlaceholderKind[input as keyof typeof validPlaceholderKind]
+}
+
+function parse_spec(key: string, description: string): PlaceholderSpec {
+  const match = key.match(/<([-_a-zA-Z]+)(:([-_a-zA-Z]+))?>/);
+  if (match) {
+    const [_0, name, _1, kind] = match;
+    return {
+      name,
+      kind: parse_kind(kind),
+      description,
+    }
+  } else {
+    throw `invalid placeholder '${key}'`
+  }
+
+}
+
+function parse_placeholders(placeholders: { [key: string]: string }) {
+  return Object.entries(placeholders).map(([key, value]) => parse_spec(key, value))
+}
+
+async function resolve_placeholder(placeholder: PlaceholderSpec) {
+  const { kind, name, description } = placeholder;
+  switch (kind) {
+    case 'new-dir': {
+      const cwd = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath ?? process.cwd();
+      let input = await vscode.window.showInputBox({
+        title: `placeholder <${name}> : new directory will be created`,
+        prompt: `for relative path, cwd is: '${cwd}'`,
+        placeHolder: description,
+      });
+      if (input) {
+        if (!path.isAbsolute(input)) {
+          input = path.join(cwd, input);
+        }
+        input = path.normalize(input);
+      }
+      return input;
+    }
+    default: {
+      console.log(`todo: untyped placeholder: ${name}`);
+      return await vscode.window.showInputBox({
+        title: name,
+        placeHolder: description,
+      });
+    }
   }
 }
