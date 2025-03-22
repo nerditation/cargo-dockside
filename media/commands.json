@@ -135,7 +135,14 @@
       "placeholders": {
         "<PATH:new-dir>": "The directory where the new project will be created (e.g., my_project)."
       },
-      "noWorkspaceNeeded": true
+      "noWorkspaceNeeded": true,
+      "postCommand": {
+        "prompt": "Open the New Project?",
+        "id": "cargo-dockside.--open-folder-wrapper",
+        "args": [
+          "<PATH>"
+        ]
+      }
     },
     {
       "id": "rust-toolbar.newLib",
@@ -149,7 +156,14 @@
       "placeholders": {
         "<PATH:new-dir>": "The directory where the new project will be created (e.g., my_project)."
       },
-      "noWorkspaceNeeded": true
+      "noWorkspaceNeeded": true,
+      "postCommand": {
+        "prompt": "Open the New Project?",
+        "id": "cargo-dockside.--open-folder-wrapper",
+        "args": [
+          "<PATH>"
+        ]
+      }
     },
     {
       "id": "rust-toolbar.newPlayground",
