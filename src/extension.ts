@@ -87,6 +87,8 @@ export function activate(context: vscode.ExtensionContext) {
       }
       context.subscriptions.push(
         vscode.commands.registerCommand(id, async () => {
+          let args = Array.isArray(cargoCommand) ? [...cargoCommand] : cargoCommand.split(/\s+/);
+          const post_args = postCommand?.args ? [...postCommand.args] : [];
           if (placeholders) {
             const dictionary: Record<string, string> = {};
             for (const spec of placeholders) {
@@ -97,32 +99,20 @@ export function activate(context: vscode.ExtensionContext) {
               }
               dictionary[spec.name] = resolved;
             }
-            if (typeof cargoCommand == 'string') {
-              cargoCommand = cargoCommand.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]);
-            } else {
-              cargoCommand = cargoCommand.map(s => s.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]));
-            }
-            if (postCommand?.args) {
-              const args = postCommand.args;
-              args.forEach((arg, i) => {
-                if (typeof arg == 'string') {
-                  args[i] = arg.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]);
-                }
-              })
-            }
+            args = args.map(s => s.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]));
+            post_args.forEach((arg, i) => {
+              if (typeof arg == 'string') {
+                post_args[i] = arg.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]);
+              }
+            })
           }
-          let exit_code;
-          if (typeof cargoCommand == 'string') {
-            exit_code = await runRustCommand(cargoCommand.split(/\s+/), noWorkspaceNeeded);
-          } else {
-            exit_code = await runRustCommand(cargoCommand, noWorkspaceNeeded);
-          }
+          const exit_code = await runRustCommand(args, noWorkspaceNeeded);
           if (exit_code == 0 && postCommand) {
             if ('Yes' == await vscode.window.showInformationMessage(
               postCommand.prompt ?? "This command has a post-command, do you want to run it?",
               'Yes'
             )) {
-              vscode.commands.executeCommand(postCommand.id, ...(postCommand.args ?? []));
+              vscode.commands.executeCommand(postCommand.id, ...post_args);
             }
           }
         })
