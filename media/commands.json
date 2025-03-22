@@ -138,6 +138,20 @@
       "noWorkspaceNeeded": true
     },
     {
+      "id": "rust-toolbar.newLib",
+      "title": "Create New Library Project",
+      "cargoCommand": [
+        "new",
+        "--lib",
+        "<PATH>"
+      ],
+      "description": "Creates a new Cargo project in a new directory.",
+      "placeholders": {
+        "<PATH:new-dir>": "The directory where the new project will be created (e.g., my_project)."
+      },
+      "noWorkspaceNeeded": true
+    },
+    {
       "id": "rust-toolbar.update",
       "title": "Update Cargo",
       "cargoCommand": "update",
