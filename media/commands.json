@@ -152,6 +152,26 @@
       "noWorkspaceNeeded": true
     },
     {
+      "id": "rust-toolbar.newPlayground",
+      "title": "Create New Playground",
+      "cargoCommand": [
+        "new",
+        "<tmpdir>/playground-<XXX>"
+      ],
+      "description": "Creates a new Cargo project in a new directory.",
+      "placeholders": [
+        {
+          "name": "tmpdir",
+          "kind": "os"
+        },
+        {
+          "name": "XXX",
+          "kind": "nonce"
+        }
+      ],
+      "noWorkspaceNeeded": true
+    },
+    {
       "id": "rust-toolbar.update",
       "title": "Update Cargo",
       "cargoCommand": "update",

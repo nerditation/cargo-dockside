@@ -1,17 +1,27 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
+import * as os from "os";
 
 const validPlaceholderKind = {
-  'new-dir': 'new-dir'
+  'new-dir': 'new-dir',
+  os: 'os',
+  nonce: 'nonce',
 } as const;
+
+// captures:
+// - \0 is whole placeholder, e.g. `<PATH:new-dir>`
+// - \1 is name, e.g. `PATH`
+// - \2 is type attribute with colon, e.g. `:new-dir`
+// - \3 is type without colon, e.g. `new-dir`
+const PLACEHOLDER_PATTERN = /<([-_A-Za-z0-9]+)(:([-_A-Za-z0-9]+))?>/g;
 
 type PlaceholderKind = keyof typeof validPlaceholderKind | undefined;
 
 interface PlaceholderSpec {
   kind: PlaceholderKind,
   name: string,
-  description: string,
+  description?: string,
 }
 
 interface Command {
@@ -77,11 +87,11 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
               }
               dictionary[spec.name] = resolved;
-              if (typeof cargoCommand == 'string') {
-                cargoCommand = cargoCommand.replaceAll(/<(.+)>/g, (_, name) => dictionary[name]);
-              } else {
-                cargoCommand = cargoCommand.map(s => s.replaceAll(/<(.+)>/g, (_, name) => dictionary[name]));
-              }
+            }
+            if (typeof cargoCommand == 'string') {
+              cargoCommand = cargoCommand.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]);
+            } else {
+              cargoCommand = cargoCommand.map(s => s.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]));
             }
           }
           if (typeof cargoCommand == 'string') {
@@ -212,7 +222,7 @@ function parse_kind(input: string): PlaceholderKind {
 }
 
 function parse_spec(key: string, description: string): PlaceholderSpec {
-  const match = key.match(/<([-_a-zA-Z]+)(:([-_a-zA-Z]+))?>/);
+  const [match] = key.matchAll(PLACEHOLDER_PATTERN);
   if (match) {
     const [_0, name, _1, kind] = match;
     return {
@@ -248,7 +258,19 @@ async function resolve_placeholder(placeholder: PlaceholderSpec) {
       }
       return input;
     }
-    default: {
+    case 'nonce': {
+      return `${Date.now()}`;
+    }
+    case 'os': {
+      const f = (os as any)[name];
+      try {
+        return f();
+      } catch (e) {
+        console.log(`invalid placeholder '<${name}>': os`);
+        return;
+      }
+    }
+    case undefined: {
       console.log(`todo: untyped placeholder: ${name}`);
       return await vscode.window.showInputBox({
         title: name,
