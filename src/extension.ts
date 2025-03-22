@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
           }
           if (typeof cargoCommand == 'string') {
-            await runRustCommand(cargoCommand.split(' '), noWorkspaceNeeded);
+            await runRustCommand(cargoCommand.split(/\s+/), noWorkspaceNeeded);
           } else {
             await runRustCommand(cargoCommand, noWorkspaceNeeded);
           }
@@ -119,7 +119,7 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
     exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${args.map(s => `"${s}"`).join(' ')}`, { cwd })
   } else {
     // TODO: proper command line parsing, including quotations, escapes, etc
-    const argv = [...`${cargoCmdPrefix}`.split(' '), ...args];
+    const argv = [...`${cargoCmdPrefix}`.split(/\s+/), ...args].map(s => s.trim()).filter(s => s != '');
     const argv0 = argv.shift()!;
     exe = new vscode.ProcessExecution(argv0, argv, { cwd })
   }
