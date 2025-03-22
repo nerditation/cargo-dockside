@@ -1,12 +1,16 @@
 /* Import Poppins Font from Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"); */
 
+/**
+ * use vscode theme colors
+ * https: //code.visualstudio.com/api/extension-guides/webview#theming-webview-content
+ */
 body {
   margin: 0;
   padding: 10px;
-  font-family: "Poppins", sans-serif;
-  background-color: #1e1e1e;
-  color: #d4d4d4;
+  /* font-family: "Poppins", sans-serif; */
+  background-color: var(--vscode-editor-background);
+  color: var(--vscode-editor-foreground);
 }
 
 .toolbar-container {
@@ -23,8 +27,9 @@ body {
 .category-section h3 {
   margin-bottom: 8px;
   font-size: 14px;
-  color: #ffffff;
-  border-bottom: 1px solid #444;
+  color: var(--vscode-sideBarSectionHeader-foreground);
+  background-color: var(--vscode-sideBarSectionHeader-background);
+  border-bottom: 1px solid var(--vscode-sideBar-border);
   padding-bottom: 4px;
 }
 
@@ -35,105 +40,73 @@ body {
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  font-family: "Poppins", sans-serif;
-  font-size: 14px;
+  /* font-family: "Poppins", sans-serif; */
+  /* font-size: 14px; */
   text-align: center;
   width: 100%;
   display: block;
   transition: background-color 0.3s ease, transform 0.3s ease;
   position: relative;
   box-sizing: border-box;
-  color: white;
+  color: var(--vscode-button-foreground);
+  background-color: var(--vscode-button-background);
 }
 
+.toolbar-button:hover {
+  background-color: var(--vscode-button-hoverBackground);
+}
+
+.category-section h3 {
+  color: white;
+}
 /* Run Commands Section Buttons */
-.RunCommands-button {
+#RunCommandsSection h3 {
   background-color: #4e8a8a; /* Matte Teal */
 }
 
-.RunCommands-button:hover {
-  background-color: #387070; /* Darker Teal */
-}
-
 /* Build Commands Section Buttons */
-.BuildCommands-button {
+#BuildCommandsSection h3 {
   background-color: #8c8c6c; /* Matte Olive Green */
 }
 
-.BuildCommands-button:hover {
-  background-color: #707050; /* Darker Olive Green */
-}
-
 /* Check Commands Section Buttons */
-.CheckCommands-button {
+#CheckCommandsSection h3 {
   background-color: #8c5e5e; /* Matte Rose Brown */
 }
 
-.CheckCommands-button:hover {
-  background-color: #704c4c; /* Darker Rose Brown */
-}
-
 /* Test Commands Section Buttons */
-.TestCommands-button {
+#TestCommandsSection h3 {
   background-color: #6c8cbf; /* Matte Steel Blue */
 }
 
-.TestCommands-button:hover {
-  background-color: #4a6b8e; /* Darker Steel Blue */
-}
-
 /* Doc Commands Section Buttons */
-.DocCommands-button {
+#DocCommandsSection h3 {
   background-color: #9c7f4c; /* Matte Bronze */
 }
 
-.DocCommands-button:hover {
-  background-color: #7a5e3b; /* Darker Bronze */
-}
-
 /* Package Commands Section Buttons */
-.PackageCommands-button {
+#PackageCommandsSection h3 {
   background-color: #7d5a9b; /* Matte Purple */
 }
 
-.PackageCommands-button:hover {
-  background-color: #5e4382; /* Darker Purple */
-}
-
 /* Rustup Commands Section Buttons */
-.RustupCommands-button {
+#RustupCommandsSection h3 {
   background-color: #7f9b7f; /* Matte Sage Green */
 }
 
-.RustupCommands-button:hover {
-  background-color: #5e7f5e; /* Darker Sage Green */
-}
-
 /* General Commands Section Buttons */
-.GeneralCommands-button {
+#GeneralCommandsSection h3 {
   background-color: #9b9b6c; /* Matte Khaki */
 }
 
-.GeneralCommands-button:hover {
-  background-color: #7f7f4f; /* Darker Khaki */
-}
-
 /* Analyze Commands Section Buttons */
-.AnalyzeCommands-button {
+#AnalyzeCommandsSection h3 {
   background-color: #8f9b77; /* Matte Olive Drab */
 }
 
-.AnalyzeCommands-button:hover {
-  background-color: #6d7a57; /* Darker Olive Drab */
-}
-
 /* Publishing Commands Section Buttons */
-.PublishingCommands-button {
+#PublishingCommandsSection h3 {
   background-color: #b89b6c; /* Matte Sand */
-}
-
-.PublishingCommands-button:hover {
-  background-color: #a07e5c; /* Darker Sand */
 }
 
 /* Focus and Tooltip Styles */
