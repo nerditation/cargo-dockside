@@ -108,10 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
           }
           const exit_code = await runRustCommand(args, noWorkspaceNeeded);
           if (exit_code === 0 && postCommand) {
-            if ('Yes' === await vscode.window.showInformationMessage(
-              postCommand.prompt ?? "This command has a post-command, do you want to run it?",
-              'Yes'
-            )) {
+            if (await confirm(postCommand.prompt ?? "This command has a post-command, do you want to run it?")) {
               vscode.commands.executeCommand(postCommand.id, ...post_args);
             }
           }
@@ -140,7 +137,7 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
   let cwd;
   if (!workspaceFolder) {
     // CAUTION: intentional double negative, read slowly and carefully
-    if (!noWorkspaceNeeded && "Continue" !== await vscode.window.showWarningMessage("No workspace folder found, continue?", "Continue")) {
+    if (!noWorkspaceNeeded && !await confirm("No workspace folder found, continue?")) {
       return;
     }
     cwd = process.cwd();
@@ -315,4 +312,8 @@ async function resolve_placeholder(placeholder: PlaceholderSpec) {
       });
     }
   }
+}
+
+async function confirm(prompt: string, button_label?: string): Promise<boolean> {
+  return 'Ok' === await vscode.window.showInformationMessage(prompt, 'Ok', 'Cancel');
 }
