@@ -46,6 +46,7 @@ manually, and small changesets are generally easier to understand.
 this extension is released under [the MIT license](./LICENSE).
 
 SPDX-License-Identifier: MIT
+<br/>
 SPDX-PackageCopyrightText: Copyright 2024 Jalal Alizadeh, 2025 nerditaion
 
 
