@@ -80,10 +80,10 @@ export function activate(context: vscode.ExtensionContext) {
       if (placeholders && !Array.isArray(placeholders)) {
         placeholders = parse_placeholders(placeholders);
       }
-      if (typeof postCommand == 'string') {
+      if (typeof postCommand === 'string') {
         postCommand = {
           id: postCommand
-        }
+        };
       }
       context.subscriptions.push(
         vscode.commands.registerCommand(id, async () => {
@@ -101,14 +101,14 @@ export function activate(context: vscode.ExtensionContext) {
             }
             args = args.map(s => s.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]));
             post_args.forEach((arg, i) => {
-              if (typeof arg == 'string') {
+              if (typeof arg === 'string') {
                 post_args[i] = arg.replaceAll(PLACEHOLDER_PATTERN, (_, name) => dictionary[name]);
               }
-            })
+            });
           }
           const exit_code = await runRustCommand(args, noWorkspaceNeeded);
-          if (exit_code == 0 && postCommand) {
-            if ('Yes' == await vscode.window.showInformationMessage(
+          if (exit_code === 0 && postCommand) {
+            if ('Yes' === await vscode.window.showInformationMessage(
               postCommand.prompt ?? "This command has a post-command, do you want to run it?",
               'Yes'
             )) {
@@ -125,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
   // nonsense.
   context.subscriptions.push(vscode.commands.registerCommand('cargo-dockside.--open-folder-wrapper', (path: string, opts?: any) => {
     return vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(path), opts);
-  }))
+  }));
 }
 
 async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
@@ -140,7 +140,7 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
   let cwd;
   if (!workspaceFolder) {
     // CAUTION: intentional double negative, read slowly and carefully
-    if (!noWorkspaceNeeded && "Continue" != await vscode.window.showWarningMessage("No workspace folder found, continue?", "Continue")) {
+    if (!noWorkspaceNeeded && "Continue" !== await vscode.window.showWarningMessage("No workspace folder found, continue?", "Continue")) {
       return;
     }
     cwd = process.cwd();
@@ -150,12 +150,12 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
     .get("cargoCmdPrefix", "cargo");
   let exe;
   if (vscode.workspace.getConfiguration("rust-toolbar").get("useShell", true)) {
-    exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${args.map(s => `"${s}"`).join(' ')}`, { cwd })
+    exe = new vscode.ShellExecution(`${cargoCmdPrefix} ${args.map(s => `"${s}"`).join(' ')}`, { cwd });
   } else {
     // TODO: proper command line parsing, including quotations, escapes, etc
-    const argv = [...`${cargoCmdPrefix}`.split(/\s+/), ...args].map(s => s.trim()).filter(s => s != '');
+    const argv = [...`${cargoCmdPrefix}`.split(/\s+/), ...args].map(s => s.trim()).filter(s => s !== '');
     const argv0 = argv.shift()!;
-    exe = new vscode.ProcessExecution(argv0, argv, { cwd })
+    exe = new vscode.ProcessExecution(argv0, argv, { cwd });
   }
   const task_id = `cargo-dockside-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
   const task = new vscode.Task(
@@ -173,13 +173,13 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
   task.presentationOptions.echo = true;
   return await new Promise<number | undefined>((resolve, reject) => {
     const disposable = vscode.tasks.onDidEndTaskProcess((e) => {
-      if (e.execution.task.definition.task_id == task_id) {
+      if (e.execution.task.definition.task_id === task_id) {
         disposable.dispose();
         resolve(e.exitCode);
       }
     });
     vscode.tasks.executeTask(task);
-  })
+  });
 }
 
 class RustToolbarProvider implements vscode.WebviewViewProvider {
@@ -251,7 +251,7 @@ class RustToolbarProvider implements vscode.WebviewViewProvider {
 }
 
 function parse_kind(input: string): PlaceholderKind {
-  return validPlaceholderKind[input as keyof typeof validPlaceholderKind]
+  return validPlaceholderKind[input as keyof typeof validPlaceholderKind];
 }
 
 function parse_spec(key: string, description: string): PlaceholderSpec {
@@ -262,15 +262,19 @@ function parse_spec(key: string, description: string): PlaceholderSpec {
       name,
       kind: parse_kind(kind),
       description,
-    }
+    };
   } else {
-    throw `invalid placeholder '${key}'`
+    // should this happened, it'd be a bug, in rust, I'd use a diverting
+    // expression like `panic!()` or `unreachable!()`.
+    // I use `throw` here just to satisfy the type checker
+    // eslint-disable-next-line no-throw-literal
+    throw `invalid placeholder '${key}'`;
   }
 
 }
 
 function parse_placeholders(placeholders: { [key: string]: string }) {
-  return Object.entries(placeholders).map(([key, value]) => parse_spec(key, value))
+  return Object.entries(placeholders).map(([key, value]) => parse_spec(key, value));
 }
 
 async function resolve_placeholder(placeholder: PlaceholderSpec) {
