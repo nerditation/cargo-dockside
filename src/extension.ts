@@ -108,7 +108,8 @@ export function activate(context: vscode.ExtensionContext) {
           }
           const exit_code = await runRustCommand(args, noWorkspaceNeeded);
           if (exit_code === 0 && postCommand) {
-            if (await confirm(postCommand.prompt ?? "This command has a post-command, do you want to run it?")) {
+            // default action is continue, unless explicitly rejected by user
+            if ('Rejected' !== await confirm(postCommand.prompt ?? "This command has a post-command, do you want to run it?")) {
               vscode.commands.executeCommand(postCommand.id, ...post_args);
             }
           }
@@ -137,7 +138,8 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
   let cwd;
   if (!workspaceFolder) {
     // CAUTION: intentional double negative, read slowly and carefully
-    if (!noWorkspaceNeeded && !await confirm("No workspace folder found, continue?")) {
+    // default action is abort, unless explicitly approved by user
+    if (!noWorkspaceNeeded && 'Approved' === await confirm("No workspace folder found, continue?")) {
       return;
     }
     cwd = process.cwd();
@@ -314,6 +316,41 @@ async function resolve_placeholder(placeholder: PlaceholderSpec) {
   }
 }
 
-async function confirm(prompt: string, button_label?: string): Promise<boolean> {
-  return 'Ok' === await vscode.window.showInformationMessage(prompt, 'Ok', 'Cancel');
+type Confirmation = 'Approved' | 'Rejected' | 'Default';
+
+type ConfirmationMode = 'quickpick' | 'notification' | 'silent';
+
+async function confirm(prompt: string, button_label?: string): Promise<Confirmation> {
+  switch (vscode.workspace.getConfiguration('rust-toolbar').get('confirmationMode', 'quickpick' as ConfirmationMode)) {
+    case 'quickpick': {
+      switch (await vscode.window.showQuickPick(
+        ['Yes', 'No'],
+        {
+          title: prompt,
+          canPickMany: false,
+          placeHolder: 'cancelling is NOT the same as selecting "No", default action will be taken instead'
+        }
+      )) {
+        case undefined:
+          return 'Default';
+        case 'Yes':
+          return 'Approved';
+        case 'No':
+          return 'Rejected';
+      }
+    }
+    case 'notification': {
+      switch (await vscode.window.showInformationMessage(prompt, 'Yes', 'No')) {
+        case undefined:
+          return 'Default';
+        case 'Yes':
+          return 'Approved';
+        case 'No':
+          return 'Rejected';
+      }
+    }
+    case 'silent': {
+      return 'Default';
+    }
+  }
 }

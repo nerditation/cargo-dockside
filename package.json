@@ -197,6 +197,21 @@
             false
           ],
           "markdownDescription": "Whether to run the cargo command through the default shell, e.g. as configured with `terminal.integrated.defaultProfile.linux`.\n\n**NOTE**: if this is set to `false`, you might need to specify the full path to cargo for `rust-toolbar.cargoCmdPrefix`, e.g. '${userHome}/.cargo/.bin/cargo'.\n\nalso note, until [#140056](https://github.com/microsoft/vscode/issues/140056) is solved or new APIs are introduced, variables are not supported, however, my experience seems to indicate `${userHome}` might be a special case."
+        },
+        "rust-toolbar.confirmationMode": {
+          "default": "quickpick",
+          "type": "string",
+          "description": "some commands have steps that want user confirmations, this setting controls the how confirmations are presented to users",
+          "enum": [
+            "quickpick",
+            "notification",
+            "silent"
+          ],
+          "enumDescriptions": [
+            "show confirmation as a quick pick input, faster for keyboard users",
+            "show confirmation as a notification, more nature for mouse users",
+            "do NOT confirm interactively, default action will be taken"
+          ]
         }
       }
     }
