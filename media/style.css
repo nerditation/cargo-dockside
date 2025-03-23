@@ -55,6 +55,10 @@ body {
   letter-spacing: 0.5px;
 }
 
+#RecentCommandsSection h3 {
+  background-color: coral;
+}
+
 /* Run Commands Section Buttons */
 #RunCommandsSection h3 {
   background-color: #4e8a8a; /* Matte Teal */
