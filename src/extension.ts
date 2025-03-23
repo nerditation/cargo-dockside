@@ -139,7 +139,8 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
   if (!workspaceFolder) {
     // CAUTION: intentional double negative, read slowly and carefully
     // default action is abort, unless explicitly approved by user
-    if (!noWorkspaceNeeded && 'Approved' === await confirm("No workspace folder found, continue?")) {
+    if (!noWorkspaceNeeded && 'Approved' !== await confirm(`No workspace folder found, cwd is '${process.cwd()}', continue?`)) {
+      vscode.window.showInformationMessage("No workspace is opened, command skipped");
       return;
     }
     cwd = process.cwd();
