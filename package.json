@@ -40,6 +40,18 @@
       ]
     },
     "commands": [
+      {
+        "command": "cargo-dockside.--open-folder-wrapper",
+        "title": "a wrapper for `vscode.openFolder`, INTERNAL USE ONLY"
+      },
+      {
+        "command": "cargo-dockside.clear-history",
+        "title": "Cargo Dockside: Clear the Recently Used Commands History from the storage"
+      },
+      {
+        "command": "cargo-dockside.rerun-from-history",
+        "title": "Cargo Dockside: Select a Recent Command to Run Again from the Command History"
+      }
     ],
     "configuration": {
       "title": "Cargo Dockside",

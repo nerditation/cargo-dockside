@@ -137,9 +137,24 @@ export function activate(context: vscode.ExtensionContext) {
   // requires the first argument to be `Uri`, not a string.
   // this command is not listed in package.json, so the description will be
   // nonsense.
-  context.subscriptions.push(vscode.commands.registerCommand('cargo-dockside.--open-folder-wrapper', (path: string, opts?: any) => {
-    return vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(path), opts);
-  }));
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cargo-dockside.--open-folder-wrapper', (path: string, opts?: any) => {
+      return vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(path), opts);
+    }),
+    vscode.commands.registerCommand('cargo-dockside.clear-history', () => {
+      context.globalState.update(FREQUENTLY_RUN_COMMAND_KEY, undefined);
+      rustToolbarProvider.update_frequently_run_commands();
+    }),
+    vscode.commands.registerCommand('cargo-dockside.rerun-from-history', async () => {
+      const picked = await vscode.window.showQuickPick(
+        get_history_items(context.globalState),
+        { matchOnDescription: true, }
+      );
+      if (picked?.command_id) {
+        return await vscode.commands.executeCommand(picked.command_id, picked.args);
+      }
+    }),
+  );
 }
 
 async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
@@ -432,4 +447,26 @@ function update_frequently_run_commands(
   });
   globalState.update(FREQUENTLY_RUN_COMMAND_KEY, saved);
   webview.update_frequently_run_commands();
+}
+
+interface QuickPickCommand extends vscode.QuickPickItem {
+  command_id?: string,
+  args?: string[],
+}
+
+function get_history_items(globalState: vscode.Memento): QuickPickCommand[] {
+  const history: SavedCommandExecution[] = globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
+  // sort in DESCENDING order, the first has largest timestamp
+  history.sort((x, y) => {
+    return y.last_run_at - x.last_run_at
+  });
+  return history.map((execution) => {
+    return {
+      label: execution.title,
+      command_id: execution.command_id,
+      args: execution.resolved_args,
+      description: `${execution.run_count} times, last ${new Date(execution.last_run_at)}, `,
+      detail: `Will Run: cargo ${execution.resolved_args.join(' ')}`
+    }
+  });
 }
