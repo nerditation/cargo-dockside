@@ -52,6 +52,14 @@ interface CommandCategory {
   [key: string]: Command[];
 }
 
+// the saved states for frequently run commands
+interface SavedCommandExecution {
+  command_id: string;
+  resolved_args: string[];
+  run_count: number;
+  last_run_at: number,
+}
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("Rust Toolbar extension is now active!");
 
@@ -107,6 +115,9 @@ export function activate(context: vscode.ExtensionContext) {
             });
           }
           const exit_code = await runRustCommand(args, noWorkspaceNeeded);
+          if (exit_code !== undefined) {
+            update_frequently_run_commands(context.globalState, id, args);
+          }
           if (exit_code === 0 && postCommand) {
             // default action is continue, unless explicitly rejected by user
             if ('Rejected' !== await confirm(postCommand.prompt ?? "This command has a post-command, do you want to run it?")) {
@@ -354,4 +365,48 @@ async function confirm(prompt: string, button_label?: string): Promise<Confirmat
       return 'Default';
     }
   }
+}
+
+/**
+ * this is not based on accurate statistics, but just an approximation
+ *
+ * I save a list of frequently run commands of limited length, which is larger
+ * than the displayed recent command list.
+ *
+ * when a command is already in the list, the actual command line arguments,
+ * run count, and timestamp will be updated
+ */
+function update_frequently_run_commands(
+  globalState: vscode.Memento,
+  command_id: string,
+  resolved_args: string[]
+) {
+  const key = 'frequently-run-commands';
+  const saved: SavedCommandExecution[] = globalState.get(key) ?? [];
+  const existing_entry = saved.find((exeution) => exeution.command_id === command_id)
+  if (existing_entry) {
+    existing_entry.last_run_at = Date.now();
+    existing_entry.resolved_args = [...resolved_args];
+    existing_entry.run_count += 1;
+  } else {
+    while (saved.length > 10) {
+      saved.pop();
+    }
+    saved.push({
+      command_id,
+      resolved_args: [...resolved_args],
+      run_count: 1,
+      last_run_at: Date.now(),
+    });
+  }
+  // sort in DESCENDING order, the first has largest count or largest timestamp
+  saved.sort((x, y) => {
+    if (x.run_count == y.run_count) {
+      return y.last_run_at - x.last_run_at;
+    } else {
+      return y.run_count - x.run_count
+    }
+  });
+  globalState.update(key, saved);
+  console.log('updated frequently used commands', saved);
 }
