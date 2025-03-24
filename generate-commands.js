@@ -9,17 +9,20 @@ const packageJsonPath = join(__dirname, "package.json");
 const packageJson = require(packageJsonPath);
 
 // Create an array to hold all commands
-let allCommands = [];
+let allCommands = packageJson.contributes.commands;
+let definedCommands = Object.fromEntries(allCommands.map(c=>[c.command, true]));
 
 // Iterate over each category in commands.json
 for (const category in commandsByCategory) {
   if (Array.isArray(commandsByCategory[category])) {
-    allCommands = allCommands.concat(
-      commandsByCategory[category].map((command) => ({
-        command: command.id,
-        title: command.title,
-      }))
-    );
+    for (const command of commandsByCategory[category]) {
+      if (!definedCommands[command.id]) {
+        allCommands.push({
+          command: command.id,
+          title: command.title,
+        })
+      }
+    }
   }
 }
 
