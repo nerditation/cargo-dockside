@@ -23,6 +23,7 @@ body {
   padding: 10px 0;
   margin: 4px 0;
   text-align: center;
+  cursor: pointer;
 }
 
 /* General Button Styling */
@@ -113,4 +114,8 @@ body {
 .toolbar-button:focus {
   outline: none;
   box-shadow: 0 0 0 2px #ffd54f; /* Focus color */
+}
+
+.collapsed button {
+  display: none;
 }

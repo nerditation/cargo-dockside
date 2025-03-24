@@ -60,4 +60,10 @@
     });
     recent_commands_section.replaceChildren(recent_commands_header, ...buttons);
   });
+
+  document.querySelectorAll('.category-section h3').forEach((header) => {
+    header.onclick = function () {
+      this.parentElement.classList.toggle("collapsed");
+    }
+  })
 })();
