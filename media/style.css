@@ -26,6 +26,14 @@ body {
   cursor: pointer;
 }
 
+.category-section h3::after {
+  content: "   ⏶";
+}
+
+.category-section.collapsed h3::after {
+  content: "   ⏷";
+}
+
 /* General Button Styling */
 .toolbar-button {
   padding: 5px 0;
