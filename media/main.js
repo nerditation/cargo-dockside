@@ -12,23 +12,6 @@
 
   commandCategoriesDiv.appendChild(recent_commands_section);
 
-  function addToRecent(clicked) {
-    // if already in recent list, remove it first
-    for (let child = recent_commands_section.firstElementChild; child; child = child.nextElementSibling) {
-      if (child.getAttribute("data-command") === clicked.getAttribute("data-command")) {
-        recent_commands_section.removeChild(child);
-        break;
-      }
-    }
-    // if already have 5 commands in the recent list, pop the last one
-    // childElementCount include the h3 header
-    if (recent_commands_section.childElementCount === 1 + 5) {
-      recent_commands_section.removeChild(recent_commands_section.lastElementChild);
-    }
-    // insert the button after the h3 header element, but there's no insertAfter()
-    recent_commands_section.insertBefore(clicked, recent_commands_header.nextElementSibling);
-  }
-
   for (const [category, commands] of Object.entries(categories)) {
     const section = document.createElement("div");
     section.className = "category-section";
@@ -50,9 +33,6 @@
 
       button.onclick = () => {
         console.log(`Button clicked: ${command.id}`); // Debug log
-        const cloned = button.cloneNode(true);
-        cloned.onclick = button.onclick;
-        addToRecent(cloned);
         vscode.postMessage({ command: command.id });
       };
 
@@ -61,4 +41,23 @@
 
     commandCategoriesDiv.appendChild(section);
   }
+
+  // sending deltas is not worth the complexity, just re-populate the buttons
+  window.addEventListener("message", (m) => {
+    const saved_command_executions = m.data;
+    const buttons = saved_command_executions.map((execution) => {
+      const button = document.createElement("button");
+      button.className = "toolbar-button";
+      button.textContent = execution.title;
+      button.setAttribute("data-command", execution.command_id);
+      button.setAttribute("title", `Execute: ${execution.resolved_args.join(' ')}`); // Tooltip
+
+      button.onclick = () => {
+        console.log(`Button clicked: ${execution.id}`); // Debug log
+        vscode.postMessage({ command: execution.command_id, args: execution.resolved_args });
+      };
+      return button;
+    });
+    recent_commands_section.replaceChildren(recent_commands_header, ...buttons);
+  });
 })();

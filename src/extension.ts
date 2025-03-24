@@ -55,15 +55,18 @@ interface CommandCategory {
 // the saved states for frequently run commands
 interface SavedCommandExecution {
   command_id: string;
+  title: string,
   resolved_args: string[];
   run_count: number;
   last_run_at: number,
 }
 
+const FREQUENTLY_RUN_COMMAND_KEY = 'frequently-run-commands';
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("Rust Toolbar extension is now active!");
 
-  const rustToolbarProvider = new RustToolbarProvider(context.extensionUri);
+  const rustToolbarProvider = new RustToolbarProvider(context.extensionUri, context);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       RustToolbarProvider.viewType,
@@ -84,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically
   Object.values(categories)
     .flat()
-    .forEach(({ id, cargoCommand, description, placeholders, noWorkspaceNeeded, postCommand }: Command) => {
+    .forEach(({ id, cargoCommand, description, placeholders, noWorkspaceNeeded, postCommand, title }: Command) => {
       if (placeholders && !Array.isArray(placeholders)) {
         placeholders = parse_placeholders(placeholders);
       }
@@ -94,8 +97,10 @@ export function activate(context: vscode.ExtensionContext) {
         };
       }
       context.subscriptions.push(
-        vscode.commands.registerCommand(id, async () => {
-          let args = Array.isArray(cargoCommand) ? [...cargoCommand] : cargoCommand.split(/\s+/);
+        vscode.commands.registerCommand(id, async (args?: string[]) => {
+          if (!args) {
+            args = Array.isArray(cargoCommand) ? [...cargoCommand] : cargoCommand.split(/\s+/);
+          }
           const post_args = postCommand?.args ? [...postCommand.args] : [];
           if (placeholders) {
             const dictionary: Record<string, string> = {};
@@ -116,7 +121,7 @@ export function activate(context: vscode.ExtensionContext) {
           }
           const exit_code = await runRustCommand(args, noWorkspaceNeeded);
           if (exit_code !== undefined) {
-            update_frequently_run_commands(context.globalState, id, args);
+            update_frequently_run_commands(context.globalState, rustToolbarProvider, id, title, args);
           }
           if (exit_code === 0 && postCommand) {
             // default action is continue, unless explicitly rejected by user
@@ -196,13 +201,20 @@ async function runRustCommand(args: string[], noWorkspaceNeeded?: boolean) {
 class RustToolbarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "rust-toolbar.toolbarView";
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  public webview?: vscode.Webview;
+
+  constructor(
+    private readonly _extensionUri: vscode.Uri,
+    public readonly context: vscode.ExtensionContext,
+  ) {
+  }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,
     _token: vscode.CancellationToken
   ) {
+    this.webview = webviewView.webview;
     webviewView.webview.options = {
       enableScripts: true,
       localResourceRoots: [this._extensionUri],
@@ -225,8 +237,9 @@ class RustToolbarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage((message) => {
       console.log(`Received message: ${message.command}`); // Debug log
-      vscode.commands.executeCommand(message.command);
+      vscode.commands.executeCommand(message.command, message.args);
     });
+    this.update_frequently_run_commands();
   }
 
   private _getHtmlForWebview(
@@ -258,6 +271,11 @@ class RustToolbarProvider implements vscode.WebviewViewProvider {
                 <script src="${scriptUri}"></script>
             </body>
             </html>`;
+  }
+
+  update_frequently_run_commands() {
+    const freq = this.context.globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
+    this.webview?.postMessage(freq)
   }
 }
 
@@ -378,13 +396,15 @@ async function confirm(prompt: string, button_label?: string): Promise<Confirmat
  */
 function update_frequently_run_commands(
   globalState: vscode.Memento,
+  webview: RustToolbarProvider,
   command_id: string,
+  title: string,
   resolved_args: string[]
 ) {
-  const key = 'frequently-run-commands';
-  const saved: SavedCommandExecution[] = globalState.get(key) ?? [];
+  const saved: SavedCommandExecution[] = globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
   const existing_entry = saved.find((exeution) => exeution.command_id === command_id)
   if (existing_entry) {
+    existing_entry.title = title;
     existing_entry.last_run_at = Date.now();
     existing_entry.resolved_args = [...resolved_args];
     existing_entry.run_count += 1;
@@ -394,6 +414,7 @@ function update_frequently_run_commands(
     }
     saved.push({
       command_id,
+      title,
       resolved_args: [...resolved_args],
       run_count: 1,
       last_run_at: Date.now(),
@@ -407,6 +428,6 @@ function update_frequently_run_commands(
       return y.run_count - x.run_count
     }
   });
-  globalState.update(key, saved);
-  console.log('updated frequently used commands', saved);
+  globalState.update(FREQUENTLY_RUN_COMMAND_KEY, saved);
+  webview.update_frequently_run_commands();
 }
