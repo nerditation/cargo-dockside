@@ -274,8 +274,9 @@ class RustToolbarProvider implements vscode.WebviewViewProvider {
   }
 
   update_frequently_run_commands() {
-    const freq = this.context.globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
-    this.webview?.postMessage(freq)
+    const freq: SavedCommandExecution[] = this.context.globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
+    const display_count = vscode.workspace.getConfiguration("rust-toolbar").get("frequentlyUsedCommandDisplayed", 3);
+    this.webview?.postMessage(freq.slice(0, display_count));
   }
 }
 
@@ -409,7 +410,8 @@ function update_frequently_run_commands(
     existing_entry.resolved_args = [...resolved_args];
     existing_entry.run_count += 1;
   } else {
-    while (saved.length > 10) {
+    const save_count = vscode.workspace.getConfiguration("rust-toolbar").get("frequentlyUsedCommandSaved", 10);
+    while (saved.length > save_count) {
       saved.pop();
     }
     saved.push({

@@ -212,6 +212,16 @@
             "show confirmation as a notification, more nature for mouse users",
             "do NOT confirm interactively, default action will be taken"
           ]
+        },
+        "rust-toolbar.frequentlyUsedCommandSaved": {
+          "type": "number",
+          "default": "10",
+          "description": "how many frequently used commands to save in the extension storage"
+        },
+        "rust-toolbar.frequentlyUsedCommandDisplayed": {
+          "type": "number",
+          "default": "3",
+          "description": "how many frequently used commands to display in the toolbar"
         }
       }
     }
