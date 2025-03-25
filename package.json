@@ -87,12 +87,12 @@
         },
         "rust-toolbar.frequentlyUsedCommandSaved": {
           "type": "number",
-          "default": "10",
+          "default": 10,
           "description": "how many frequently used commands to save in the extension storage"
         },
         "rust-toolbar.frequentlyUsedCommandDisplayed": {
           "type": "number",
-          "default": "3",
+          "default": 3,
           "description": "how many frequently used commands to display in the toolbar"
         }
       }
