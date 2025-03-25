@@ -98,12 +98,15 @@ export function activate(context: vscode.ExtensionContext) {
         };
       }
       context.subscriptions.push(
-        vscode.commands.registerCommand(id, async (args?: string[]) => {
-          if (!args) {
+        vscode.commands.registerCommand(id, async (resolved_args?: string[]) => {
+          let args;
+          if (!resolved_args) {
             args = Array.isArray(cargoCommand) ? [...cargoCommand] : cargoCommand.split(/\s+/);
+          } else {
+            args = resolved_args;
           }
           const post_args = postCommand?.args ? [...postCommand.args] : [];
-          if (placeholders) {
+          if (!resolved_args && placeholders) {
             const dictionary: Record<string, string> = {};
             for (const spec of placeholders) {
               const resolved = await resolve_placeholder(spec);
