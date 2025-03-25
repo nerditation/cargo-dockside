@@ -19,7 +19,7 @@ for (const category in commandsByCategory) {
       if (!definedCommands[command.id]) {
         allCommands.push({
           command: command.id,
-          title: command.title,
+          title: `Cargo Dockside: ${command.title}`,
         })
       }
     }
