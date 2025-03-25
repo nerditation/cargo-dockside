@@ -324,21 +324,12 @@ function parse_kind(input: string): PlaceholderKind {
 
 function parse_spec(key: string, description: string): PlaceholderSpec {
   const [match] = key.matchAll(PLACEHOLDER_PATTERN);
-  if (match) {
-    const [_0, name, _1, kind] = match;
-    return {
-      name,
-      kind: parse_kind(kind),
-      description,
-    };
-  } else {
-    // should this happened, it'd be a bug, in rust, I'd use a diverting
-    // expression like `panic!()` or `unreachable!()`.
-    // I use `throw` here just to satisfy the type checker
-    // eslint-disable-next-line no-throw-literal
-    throw `invalid placeholder '${key}'`;
-  }
-
+  const [_0, name, _1, kind] = match;
+  return {
+    name,
+    kind: parse_kind(kind),
+    description,
+  };
 }
 
 function parse_placeholders(placeholders: { [key: string]: string }) {
@@ -441,7 +432,7 @@ function update_frequently_run_commands(
   resolved_args: string[]
 ) {
   const saved: SavedCommandExecution[] = globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
-  const existing_entry = saved.find((exeution) => exeution.command_id === command_id)
+  const existing_entry = saved.find((exeution) => exeution.command_id === command_id);
   if (existing_entry) {
     existing_entry.title = title;
     existing_entry.last_run_at = Date.now();
@@ -462,10 +453,10 @@ function update_frequently_run_commands(
   }
   // sort in DESCENDING order, the first has largest count or largest timestamp
   saved.sort((x, y) => {
-    if (x.run_count == y.run_count) {
+    if (x.run_count === y.run_count) {
       return y.last_run_at - x.last_run_at;
     } else {
-      return y.run_count - x.run_count
+      return y.run_count - x.run_count;
     }
   });
   globalState.update(FREQUENTLY_RUN_COMMAND_KEY, saved);
@@ -481,7 +472,7 @@ function get_history_items(globalState: vscode.Memento): QuickPickCommand[] {
   const history: SavedCommandExecution[] = globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
   // sort in DESCENDING order, the first has largest timestamp
   history.sort((x, y) => {
-    return y.last_run_at - x.last_run_at
+    return y.last_run_at - x.last_run_at;
   });
   return history.map((execution) => {
     return {
@@ -490,6 +481,6 @@ function get_history_items(globalState: vscode.Memento): QuickPickCommand[] {
       args: execution.resolved_args,
       description: `${execution.run_count} times, last ${new Date(execution.last_run_at)}, `,
       detail: `Will Run: cargo ${execution.resolved_args.join(' ')}`
-    }
+    };
   });
 }
