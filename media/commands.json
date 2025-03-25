@@ -11,6 +11,37 @@
       "title": "Run Code (Quite)",
       "cargoCommand": "run -q",
       "description": "Compiles and runs the current project with minimal output."
+    },
+    {
+      "id": "rust-toolbar.runBin",
+      "title": "Run Binary Crate",
+      "cargoCommand": [
+        "run",
+        "<NAME>"
+      ],
+      "description": "Run a specific binary crate.",
+      "placeholders": [
+        {
+          "name": "NAME",
+          "description": "the name of the binary crate to run"
+        }
+      ]
+    },
+    {
+      "id": "rust-toolbar.runExample",
+      "title": "Run Example Crate",
+      "cargoCommand": [
+        "run",
+        "--example",
+        "<NAME>"
+      ],
+      "description": "Run a specific example crate.",
+      "placeholders": [
+        {
+          "name": "NAME",
+          "description": "the name of the example crate to run"
+        }
+      ]
     }
   ],
   "Build Commands": [
