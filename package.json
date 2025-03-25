@@ -46,11 +46,11 @@
       },
       {
         "command": "cargo-dockside.clear-history",
-        "title": "Cargo Dockside: Clear the Recently Used Commands History from the storage"
+        "title": "Cargo Dockside: Clear the Recently Used Commands History"
       },
       {
         "command": "cargo-dockside.rerun-from-history",
-        "title": "Cargo Dockside: Select a Recent Command to Run Again from the Command History"
+        "title": "Cargo Dockside: Rerun a Recent Command"
       }
     ],
     "configuration": {
