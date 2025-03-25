@@ -44,7 +44,18 @@
 
   // sending deltas is not worth the complexity, just re-populate the buttons
   window.addEventListener("message", (m) => {
-    const saved_command_executions = m.data;
+    const message = m.data;
+    // load persisted collapsed states
+    if (message.collapsed) {
+      for (const section_id in message.collapsed) {
+        if (message.collapsed[section_id]) {
+          document.querySelector(`#${section_id}`).classList.add('collapsed');
+        }
+      }
+      return;
+    }
+    // load persisted command history
+    const saved_command_executions = message.history;
     const buttons = saved_command_executions.map((execution) => {
       const button = document.createElement("button");
       button.className = "toolbar-button";
@@ -63,7 +74,11 @@
 
   document.querySelectorAll('.category-section h3').forEach((header) => {
     header.onclick = function () {
-      this.parentElement.classList.toggle("collapsed");
+      const section = this.parentElement;
+      vscode.postMessage({
+        toggle: section.id,
+      });
+      section.classList.toggle("collapsed");
     }
   })
 })();

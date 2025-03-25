@@ -62,6 +62,7 @@ interface SavedCommandExecution {
 }
 
 const FREQUENTLY_RUN_COMMAND_KEY = 'frequently-run-commands';
+const COLLAPSED_SECTIONS_KEY = 'collapsed-sections';
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Rust Toolbar extension is now active!");
@@ -251,10 +252,20 @@ class RustToolbarProvider implements vscode.WebviewViewProvider {
     );
 
     webviewView.webview.onDidReceiveMessage((message) => {
-      console.log(`Received message: ${message.command}`); // Debug log
-      vscode.commands.executeCommand(message.command, message.args);
+      if (message.command) {
+        console.log(`Received message: ${message.command}`); // Debug log
+        vscode.commands.executeCommand(message.command, message.args);
+      }
+      if (message.toggle) {
+        const section_id = message.toggle;
+        console.log(`toggled section ${section_id}`);
+        const collapsed: { [section_id: string]: boolean } = this.context.globalState.get(COLLAPSED_SECTIONS_KEY) ?? {};
+        collapsed[section_id] = !collapsed[section_id];
+        this.context.globalState.update(COLLAPSED_SECTIONS_KEY, collapsed);
+      }
     });
     this.update_frequently_run_commands();
+    this.init_collapsed_sections();
   }
 
   private _getHtmlForWebview(
@@ -291,7 +302,16 @@ class RustToolbarProvider implements vscode.WebviewViewProvider {
   update_frequently_run_commands() {
     const freq: SavedCommandExecution[] = this.context.globalState.get(FREQUENTLY_RUN_COMMAND_KEY) ?? [];
     const display_count = vscode.workspace.getConfiguration("rust-toolbar").get("frequentlyUsedCommandDisplayed", 3);
-    this.webview?.postMessage(freq.slice(0, display_count));
+    this.webview?.postMessage({
+      history: freq.slice(0, display_count)
+    });
+  }
+
+  init_collapsed_sections() {
+    const collapsed: { [section_id: string]: boolean } = this.context.globalState.get(COLLAPSED_SECTIONS_KEY) ?? {};
+    this.webview?.postMessage({
+      collapsed
+    });
   }
 }
 
