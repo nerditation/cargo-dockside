@@ -6,6 +6,7 @@ import * as os from "os";
 const validPlaceholderKind = {
   'new-dir': 'new-dir',
   os: 'os',
+  choice: 'choice',
   nonce: 'nonce',
 } as const;
 
@@ -22,6 +23,7 @@ interface PlaceholderSpec {
   kind: PlaceholderKind,
   name: string,
   description?: string,
+  candidates?: string[],
 }
 
 interface Command {
@@ -110,7 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
             const dictionary: Record<string, string> = {};
             for (const spec of placeholders) {
               const resolved = await resolve_placeholder(spec);
-              if (!resolved) {
+              if (resolved === undefined) {
                 vscode.window.showInformationMessage("canceled");
                 return;
               }
@@ -336,8 +338,8 @@ function parse_placeholders(placeholders: { [key: string]: string }) {
   return Object.entries(placeholders).map(([key, value]) => parse_spec(key, value));
 }
 
-async function resolve_placeholder(placeholder: PlaceholderSpec) {
-  const { kind, name, description } = placeholder;
+async function resolve_placeholder(placeholder: PlaceholderSpec): Promise<string | undefined> {
+  const { kind, name, description, candidates } = placeholder;
   switch (kind) {
     case 'new-dir': {
       const cwd = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath ?? process.cwd();
@@ -365,6 +367,16 @@ async function resolve_placeholder(placeholder: PlaceholderSpec) {
         console.log(`invalid placeholder '<${name}>': os`);
         return;
       }
+    }
+    case 'choice': {
+      return await vscode.window.showQuickPick(
+        candidates!,
+        {
+          canPickMany: false,
+          title: name,
+          placeHolder: description
+        }
+      );
     }
     case undefined: {
       console.log(`todo: untyped placeholder: ${name}`);

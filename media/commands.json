@@ -237,6 +237,84 @@
       "title": "Fetch Dependencies",
       "cargoCommand": "fetch",
       "description": "Downloads the dependencies for the project."
+    },
+    {
+      "id": "rust-toolbar.add",
+      "title": "Add a Dependency Package",
+      "cargoCommand": [
+        "add",
+        "<PKG>"
+      ],
+      "description": "Add a package to dependencies.",
+      "placeholders": [
+        {
+          "name": "PKG",
+          "description": "The package name, optionally followed by `@VERSION`"
+        }
+      ]
+    },
+    {
+      "id": "rust-toolbar.addWithFeatures",
+      "title": "Add a Dependency Package with Features",
+      "cargoCommand": [
+        "add",
+        "<DEFAULT-FEATURES>",
+        "<PKG>",
+        "--features",
+        "<FEATURE>"
+      ],
+      "description": "Add packages to dependencies with selected features.",
+      "placeholders": [
+        {
+          "name": "PKG",
+          "description": "The package name, optionally followed by `@VERSION`"
+        },
+        {
+          "name": "DEFAULT-FEATURES",
+          "description": "Whether to enable the default features",
+          "kind": "choice",
+          "candidates": [
+            "--no-default-features",
+            "--default-features"
+          ]
+        },
+        {
+          "name": "FEATURES",
+          "description": "Comma separated feature names to enable"
+        }
+      ]
+    },
+    {
+      "id": "rust-toolbar.addDev",
+      "title": "Add a Developement Dependency",
+      "cargoCommand": [
+        "add",
+        "--dev",
+        "<PKG>"
+      ],
+      "description": "Add a package to dev-dependencies.",
+      "placeholders": [
+        {
+          "name": "PKG",
+          "description": "The package name, optionally followed by `@VERSION`"
+        }
+      ]
+    },
+    {
+      "id": "rust-toolbar.addBuild",
+      "title": "Add  a Build Dependency",
+      "cargoCommand": [
+        "add",
+        "--build",
+        "<PKG>"
+      ],
+      "description": "Add a package to build-dependencies.",
+      "placeholders": [
+        {
+          "name": "PKG",
+          "description": "The package name, optionally followed by `@VERSION"
+        }
+      ]
     }
   ],
   "Rustup Commands": [
