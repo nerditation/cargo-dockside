@@ -63,9 +63,13 @@
       button.setAttribute("data-command", execution.command_id);
       button.setAttribute("title", `Execute: ${execution.resolved_args.join(' ')}`); // Tooltip
 
-      button.onclick = () => {
+      button.onclick = (e) => {
         console.log(`Button clicked: ${execution.id}`); // Debug log
-        vscode.postMessage({ command: execution.command_id, args: execution.resolved_args });
+        if (e.shiftKey) {
+          vscode.postMessage({ command: execution.command_id });
+        } else {
+          vscode.postMessage({ command: execution.command_id, args: execution.resolved_args });
+        }
       };
       return button;
     });
